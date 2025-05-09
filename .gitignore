@@ -7,3 +7,6 @@ node_modules
 *-lock.json
 /*-lock.json
 ./*-lock.json
+package-lock.json
+/package-lock.json
+./package-lock.json
