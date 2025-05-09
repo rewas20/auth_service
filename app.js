@@ -30,7 +30,7 @@ const accessLogStream = fs.createWriteStream(
 // logs in Apache-style format
 app.use(morgan('combined', { stream: accessLogStream }));
 
-// Mount routers
+// routers
 app.use('/api/auth', authRoutes);
 
 // Error handling middleware

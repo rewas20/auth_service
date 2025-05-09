@@ -43,14 +43,14 @@ const User = sequelize.define('User', {
   }
 });
 
-// Instance method to generate JWT
+// Instance method to generate JWT we can add more data if we need to the token 
 User.prototype.getSignedJwtToken = function() {
   return jwt.sign({ id: this.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE
   });
 };
 
-// Instance method to check password
+// Instance method to check password 
 User.prototype.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
