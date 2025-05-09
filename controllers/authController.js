@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-//const redisClient = require('../config/redis'); // استدعاء عميل Redis
+const redisClient = require('../config/redis'); // استدعاء عميل Redis
 
 
 // @desc    Register a new user
@@ -30,7 +30,7 @@ const register = async (req, res) => {
     const token = user.getSignedJwtToken();
 
     // Store token in Redis (optional - session or for tracking)
-    //await redisClient.set(`token:${user.id}`, token, { EX:  process.env.REDIS_EXPIRE }); 
+    await redisClient.set(`token:${user.id}`, token, { EX:  process.env.REDIS_EXPIRE }); 
     
     res.status(201).json({
       id: user.id,
@@ -73,7 +73,7 @@ const login = async (req, res) => {
     const token = user.getSignedJwtToken();
 
     // Store token in Redis
-    //await redisClient.set(`token:${user.id}`, token, { EX: process.env.REDIS_EXPIRE });
+    await redisClient.set(`token:${user.id}`, token, { EX: process.env.REDIS_EXPIRE });
 
     res.json({
       id: user.id,
@@ -104,8 +104,24 @@ const getMe = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(400).json({ message: 'No token provided' });
+
+
+  await redisClient.set(`bl:${token}`, '1', {
+    EX: process.env.REDIS_EXPIRE,
+  });
+
+  res.json({ message: 'Logged out successfully' });
+};
+
+
 module.exports = {
   register,
   login,
   getMe,
+  logout
 }; 
+
+
