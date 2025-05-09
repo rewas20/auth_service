@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+//for logs
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 // Load env vars
 dotenv.config();
@@ -15,6 +19,16 @@ app.use(express.json());
 
 // Enable CORS
 app.use(cors());
+
+
+// Create a write stream (in append mode)
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+
+// logs in Apache-style format
+app.use(morgan('combined', { stream: accessLogStream }));
 
 // Mount routers
 app.use('/api/auth', authRoutes);
