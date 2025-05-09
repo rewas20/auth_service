@@ -7,6 +7,7 @@ const client = redis.createClient({
   username: process.env.REDIS_USERNAME,
 });
 
+
 client.on('error', (err) => console.error('Redis Client Error', err));
 
 client.connect();
