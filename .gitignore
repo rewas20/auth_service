@@ -10,10 +10,6 @@ node_modules
 package-lock.json
 /package-lock.json
 ./package-lock.json
-*.log
-/*.log
-./*.log
-
 access.log
 /access.log
 ./access.log
