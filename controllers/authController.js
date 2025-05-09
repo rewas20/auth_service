@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+//const redisClient = require('../config/redis'); // استدعاء عميل Redis
+
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -6,6 +8,11 @@ const User = require('../models/userModel');
 const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
 
     // Check if user exists
     const userExists = await User.findOne({ where: { email } });
@@ -20,11 +27,16 @@ const register = async (req, res) => {
       password,
     });
 
+    const token = user.getSignedJwtToken();
+
+    // Store token in Redis (optional - session or for tracking)
+    //await redisClient.set(`token:${user.id}`, token, { EX:  process.env.REDIS_EXPIRE }); 
+    
     res.status(201).json({
       id: user.id,
       name: user.name,
       email: user.email,
-      token: user.getSignedJwtToken(),
+      token: token,
     });
   } catch (error) {
     console.error(error);
@@ -38,6 +50,11 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
 
     // Check for user email
     const user = await User.findOne({ where: { email } });
@@ -53,11 +70,16 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    const token = user.getSignedJwtToken();
+
+    // Store token in Redis
+    //await redisClient.set(`token:${user.id}`, token, { EX: process.env.REDIS_EXPIRE });
+
     res.json({
       id: user.id,
       name: user.name,
       email: user.email,
-      token: user.getSignedJwtToken(),
+      token: token,
     });
   } catch (error) {
     console.error(error);
