@@ -1,0 +1,2 @@
+# Authentication Microservice Description
+A standalone microservice built with Node.js and Express, designed to handle user authentication functionalities including registration, login, and token-based authorization. It uses PostgreSQL for persistent user data storage, bcrypt for secure password hashing, and JSON Web Tokens (JWT) for stateless authentication. The service provides RESTful endpoints and can be integrated with other microservices via secure HTTP communication.
